@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\URLShortener_WebAPI_DataAccess\URLShortener_WebAPI_DataAccess.csproj" />
+    <ProjectReference Include="..\URLShortener_WebAPI_Domain\URLShortener_WebAPI_Domain.csproj" />
   </ItemGroup>
 
 </Project>
