@@ -24,7 +24,7 @@ namespace URLShortener_WebAPI.Services
                     Id = u.Id,
                     Original = u.Original,
                     Shortened = u.Shortened,
-                    VisitCount = u.VisitCount
+                    ViewCount = u.ViewCount
                 })
                 .ToList();
             return urls;

@@ -10,7 +10,7 @@ using URLShortener_WebAPI.Services;
 
 namespace URLShortener_WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UrlController : ControllerBase
     {

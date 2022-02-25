@@ -38,6 +38,8 @@ namespace URLShortener_WebAPI
 
             services.AddTransient<UrlService>();
 
+            services.AddAutoMapper(typeof(MappingProfile));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
