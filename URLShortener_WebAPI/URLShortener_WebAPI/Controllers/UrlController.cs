@@ -23,11 +23,22 @@ namespace URLShortener_WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public ActionResult<List<UrlViewModel>> GetAll()
         {
             var urls = _urlService.GetAllUrls();
             return _mapper.Map<List<UrlViewModel>>(urls);
+        }
+
+        [HttpPost("ToShorten")]
+        public IActionResult Shorten(string url)
+        {
+            if (url == null)
+                return BadRequest("Data not filled!");
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var result))
+                return BadRequest("URL contains an error!");
+            _urlService.ShortenAndSave(url);
+            return Ok();
         }
     }
 }

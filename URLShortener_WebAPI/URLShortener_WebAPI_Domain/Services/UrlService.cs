@@ -29,5 +29,16 @@ namespace URLShortener_WebAPI.Services
                 .ToList();
             return urls;
         }
+
+        public void ShortenAndSave(string url)
+        {
+            var newUrl = new Url()
+            {
+                Original = url,
+                Shortened = "bit.ly/" + Guid.NewGuid().ToString().Split('-')[0],
+                ViewCount = 0,
+            };
+            _urlRepository.Save(newUrl);
+        }
     }
 }
