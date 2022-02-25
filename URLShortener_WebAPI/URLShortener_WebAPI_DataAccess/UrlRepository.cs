@@ -1,18 +1,15 @@
 ﻿using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using URLShortener_WebAPI.Model;
 
 namespace URLShortener_WebAPI_DataAccess
 {
-    public class UrlShortenerRepository : IUrlShortenerRepository
+    public class UrlRepository : IUrlRepository
     {
         private readonly IMongoCollection<Url> _urls;
 
-        public UrlShortenerRepository(IUrlShortenerDatabaseSettings settings)
+        public UrlRepository(IUrlShortenerDbSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);

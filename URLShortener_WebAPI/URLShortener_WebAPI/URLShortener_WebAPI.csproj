@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\URLShortener_WebAPI_DataAccess\URLShortener_WebAPI_DataAccess.csproj" />
   </ItemGroup>
 

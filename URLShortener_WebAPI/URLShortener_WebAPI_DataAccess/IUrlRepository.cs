@@ -7,7 +7,7 @@ using URLShortener_WebAPI.Model;
 
 namespace URLShortener_WebAPI_DataAccess
 {
-    public interface IUrlShortenerRepository
+    public interface IUrlRepository
     {
         List<Url> GetAll();
 

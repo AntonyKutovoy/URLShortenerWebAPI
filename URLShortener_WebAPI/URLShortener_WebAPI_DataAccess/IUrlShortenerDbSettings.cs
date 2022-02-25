@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace URLShortener_WebAPI_DataAccess
 {
-    public interface IUrlShortenerDatabaseSettings
+    public interface IUrlShortenerDbSettings
     {
         string UrlsCollectionName { get; set; }
         string ConnectionString { get; set; }

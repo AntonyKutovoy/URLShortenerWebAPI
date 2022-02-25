@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using URLShortener_WebAPI.Services;
 using URLShortener_WebAPI_DataAccess;
 
 namespace URLShortener_WebAPI
@@ -27,11 +28,15 @@ namespace URLShortener_WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<UrlShortenerDatabaseSettings>(
-                Configuration.GetSection(nameof(UrlShortenerDatabaseSettings)));
+            services.Configure<UrlShortenerDbSettings>(
+                Configuration.GetSection(nameof(UrlShortenerDbSettings)));
 
-            services.AddTransient<IUrlShortenerDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<UrlShortenerDatabaseSettings>>().Value);
+            services.AddTransient<IUrlShortenerDbSettings>(sp =>
+                sp.GetRequiredService<IOptions<UrlShortenerDbSettings>>().Value);
+
+            services.AddTransient<IUrlRepository, UrlRepository>();
+
+            services.AddTransient<UrlService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
