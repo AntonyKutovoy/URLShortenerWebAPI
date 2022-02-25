@@ -6,11 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using URLShortener_WebAPI_DataAccess;
 
 namespace URLShortener_WebAPI
 {
@@ -25,6 +27,11 @@ namespace URLShortener_WebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<UrlShortenerDatabaseSettings>(
+                Configuration.GetSection(nameof(UrlShortenerDatabaseSettings)));
+
+            services.AddTransient<IUrlShortenerDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<UrlShortenerDatabaseSettings>>().Value);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
