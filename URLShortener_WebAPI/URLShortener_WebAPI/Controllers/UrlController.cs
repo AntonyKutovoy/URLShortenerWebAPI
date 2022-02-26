@@ -31,13 +31,13 @@ namespace URLShortener_WebAPI.Controllers
         }
 
         [HttpPost("ToShorten")]
-        public IActionResult Shorten(string url)
+        public IActionResult Shorten(string originalUrl)
         {
-            if (url == null)
-                return BadRequest("Data not filled!");
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var result))
-                return BadRequest("URL contains an error!");
-            _urlService.ShortenAndSave(url);
+            if (originalUrl == null)
+                return BadRequest("URL cannot be empty.");
+            if (!Uri.TryCreate(originalUrl, UriKind.Absolute, out var result))
+                return BadRequest("Could not understand URL.");
+            _urlService.Save(originalUrl);
             return Ok();
         }
     }

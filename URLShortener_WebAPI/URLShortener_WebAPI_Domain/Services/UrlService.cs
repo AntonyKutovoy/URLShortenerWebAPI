@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,24 +22,40 @@ namespace URLShortener_WebAPI.Services
             var urls = _urlRepository.GetAll()
                 .Select(u => new UrlDto
                 {
-                    Id = u.Id,
+                    Shortened = GetShortenedUrl(u.Id),
                     Original = u.Original,
-                    Shortened = u.Shortened,
                     ViewCount = u.ViewCount
                 })
                 .ToList();
-            return urls;
+            if (urls != null)
+            {
+                return urls;
+            }
+            else
+                throw new ArgumentNullException();
         }
 
-        public void ShortenAndSave(string url)
+        public void Save(string originalUrl)
         {
-            var newUrl = new Url()
+            var url = _urlRepository.TryGetByOriginal(originalUrl);
+            if (url == null)
             {
-                Original = url,
-                Shortened = "bit.ly/" + Guid.NewGuid().ToString().Split('-')[0],
-                ViewCount = 0,
-            };
-            _urlRepository.Save(newUrl);
+                var idGenerator = new Random();
+                var newUrl = new Url()
+                {
+                    Id = idGenerator.Next(100000, 999999),
+                    Original = originalUrl,
+                    ViewCount = 0,
+                };
+                _urlRepository.Save(newUrl);
+            }
+            else
+                throw new ArgumentNullException();
+        }
+
+        public string GetShortenedUrl(int id)
+        {
+            return WebEncoders.Base64UrlEncode(BitConverter.GetBytes(id));
         }
     }
 }

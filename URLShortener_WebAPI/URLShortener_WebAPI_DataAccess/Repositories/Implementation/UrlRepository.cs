@@ -21,8 +21,11 @@ namespace URLShortener_WebAPI_DataAccess
         public List<Url> GetAll() =>
            _urls.Find(url => true).ToList();
 
-        public Url TryGetByShortened(string shortenedUrl) =>
-            _urls.Find(url => url.Shortened == shortenedUrl).FirstOrDefault();
+        //public Url TryGetByShortened(string shortenedUrl) =>
+        //    _urls.Find(url => url.Shortened == shortenedUrl).FirstOrDefault();
+
+        public Url TryGetByOriginal(string originalUrl) =>
+            _urls.Find(url => url.Original == originalUrl).FirstOrDefault();
 
         public void Save(Url url) =>
             _urls.InsertOne(url);
