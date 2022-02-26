@@ -40,5 +40,16 @@ namespace URLShortener_WebAPI.Controllers
             _urlService.Save(originalUrl);
             return Ok();
         }
+
+        [HttpGet("ToOriginal")]
+        public IActionResult Original(string shortenedUrl)
+        {
+            if (shortenedUrl == null)
+                return BadRequest("URL cannot be empty.");
+            _urlService.UpdateViewCount(shortenedUrl);
+            _urlService.GetOriginal(shortenedUrl);
+            return Ok();
+            //return Redirect();
+        }
     }
 }

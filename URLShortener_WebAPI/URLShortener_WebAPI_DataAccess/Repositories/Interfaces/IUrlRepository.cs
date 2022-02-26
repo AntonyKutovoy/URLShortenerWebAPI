@@ -11,12 +11,12 @@ namespace URLShortener_WebAPI_DataAccess
     {
         List<Url> GetAll();
 
-        //Url TryGetByShortened(string shortenedUrl);
+        Url TryGetById(int id);
 
         Url TryGetByOriginal(string originalUrl);
 
         void Save(Url url);
 
-        void UpdateVisitCount(Url url);
+        void UpdateViewCount(Url url);
     }
 }

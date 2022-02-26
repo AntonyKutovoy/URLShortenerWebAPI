@@ -53,9 +53,43 @@ namespace URLShortener_WebAPI.Services
                 throw new ArgumentNullException();
         }
 
-        public string GetShortenedUrl(int id)
+        public void UpdateViewCount(string shortenedUrl)
+        {
+            var url = _urlRepository.TryGetById(GetId(shortenedUrl));
+            if (url != null)
+            {
+                url.ViewCount++;
+                _urlRepository.UpdateViewCount(url);
+            }
+            else
+                throw new ArgumentNullException();
+        }
+
+        public UrlDto GetOriginal(string shortenedUrl)
+        {
+            var url = _urlRepository.TryGetById(GetId(shortenedUrl));
+            if (url != null)
+            {
+                var urlDto = new UrlDto()
+                {
+                    Shortened = shortenedUrl,
+                    Original = url.Original,
+                    ViewCount = url.ViewCount
+                };
+                return urlDto;
+            }
+            else
+                throw new ArgumentNullException();
+        }
+
+        private string GetShortenedUrl(int id)
         {
             return WebEncoders.Base64UrlEncode(BitConverter.GetBytes(id));
+        }
+
+        private int GetId(string urlChunk)
+        {
+            return BitConverter.ToInt32(WebEncoders.Base64UrlDecode(urlChunk));
         }
     }
 }
