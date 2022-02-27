@@ -45,6 +45,7 @@ namespace URLShortener_WebAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "URLShortener_WebAPI", Version = "v1" });
             });
+            services.AddHttpContextAccessor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +55,10 @@ namespace URLShortener_WebAPI
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "URLShortener_WebAPI v1"));
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             app.UseHttpsRedirection();

@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using URLShortener_WebAPI.Model;
 using URLShortener_WebAPI.Services;
 
@@ -16,40 +15,45 @@ namespace URLShortener_WebAPI.Controllers
     {
         private readonly UrlService _urlService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UrlController(UrlService urlService, IMapper mapper)
+        public UrlController(UrlService urlService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _urlService = urlService;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet("GetAll")]
+        //get all urls
+        [HttpGet("/getall")]
         public ActionResult<List<UrlViewModel>> GetAll()
         {
-            var urls = _urlService.GetAllUrls();
-            return _mapper.Map<List<UrlViewModel>>(urls);
+            return _mapper.Map<List<UrlViewModel>>(_urlService.GetAllUrls());
         }
 
-        [HttpPost("ToShorten")]
-        public IActionResult Shorten(string originalUrl)
+        //save original url to shorten
+        [HttpPost("/saveurl")]
+        public ActionResult Shorten(string originalUrl)
         {
             if (originalUrl == null)
                 return BadRequest("URL cannot be empty.");
             if (!Uri.TryCreate(originalUrl, UriKind.Absolute, out var result))
                 return BadRequest("Could not understand URL.");
-            _urlService.Save(originalUrl);
+            _urlService.Save($"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}/", originalUrl);
             return Ok();
         }
 
-        [HttpGet("ToOriginal")]
-        public IActionResult Original(string shortenedUrl)
+        //get original url from shorten
+        [HttpGet("/getoriginal")]
+        public ActionResult<UrlViewModel> Original(string shortenedUrl)
         {
             if (shortenedUrl == null)
                 return BadRequest("URL cannot be empty.");
+            if (!Uri.TryCreate(shortenedUrl, UriKind.Absolute, out var result))
+                return BadRequest("Could not understand URL.");
             _urlService.UpdateViewCount(shortenedUrl);
-            _urlService.GetOriginal(shortenedUrl);
-            return Ok();
-            //return Redirect();
+            return _mapper.Map<UrlViewModel>(_urlService.GetOriginal(shortenedUrl));
+            //return Redirect(_urlService.GetOriginal(shortenedUrl).Original);
         }
     }
 }

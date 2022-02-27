@@ -22,12 +22,12 @@ namespace URLShortener_WebAPI.Services
             var urls = _urlRepository.GetAll()
                 .Select(u => new UrlDto
                 {
-                    Shortened = GetShortenedUrl(u.Id),
+                    Shortened = u.Shortened,
                     Original = u.Original,
                     ViewCount = u.ViewCount
                 })
                 .ToList();
-            if (urls != null)
+            if (!(urls.Count == 0))
             {
                 return urls;
             }
@@ -35,39 +35,39 @@ namespace URLShortener_WebAPI.Services
                 throw new ArgumentNullException();
         }
 
-        public void Save(string originalUrl)
+        public void Save(string path, string originalUrl)
         {
             var url = _urlRepository.TryGetByOriginal(originalUrl);
             if (url == null)
             {
-                var idGenerator = new Random();
+                var generator = new Random();
                 var newUrl = new Url()
                 {
-                    Id = idGenerator.Next(100000, 999999),
+                    Shortened = path + GenerateUrlChunk(generator.Next(100000, 999999)),
                     Original = originalUrl,
                     ViewCount = 0,
                 };
                 _urlRepository.Save(newUrl);
             }
             else
-                throw new ArgumentNullException();
+                throw new ArgumentException("URL is already in the database.");
         }
 
         public void UpdateViewCount(string shortenedUrl)
         {
-            var url = _urlRepository.TryGetById(GetId(shortenedUrl));
+            var url = _urlRepository.TryGetByShortened(shortenedUrl);
             if (url != null)
             {
                 url.ViewCount++;
                 _urlRepository.UpdateViewCount(url);
             }
             else
-                throw new ArgumentNullException();
+                throw new ArgumentException("URL is not in database.");
         }
 
         public UrlDto GetOriginal(string shortenedUrl)
         {
-            var url = _urlRepository.TryGetById(GetId(shortenedUrl));
+            var url = _urlRepository.TryGetByShortened(shortenedUrl);
             if (url != null)
             {
                 var urlDto = new UrlDto()
@@ -79,17 +79,12 @@ namespace URLShortener_WebAPI.Services
                 return urlDto;
             }
             else
-                throw new ArgumentNullException();
+                throw new ArgumentException("URL is not in database.");
         }
 
-        private string GetShortenedUrl(int id)
+        private string GenerateUrlChunk(int generator)
         {
-            return WebEncoders.Base64UrlEncode(BitConverter.GetBytes(id));
-        }
-
-        private int GetId(string urlChunk)
-        {
-            return BitConverter.ToInt32(WebEncoders.Base64UrlDecode(urlChunk));
+            return WebEncoders.Base64UrlEncode(BitConverter.GetBytes(generator));
         }
     }
 }

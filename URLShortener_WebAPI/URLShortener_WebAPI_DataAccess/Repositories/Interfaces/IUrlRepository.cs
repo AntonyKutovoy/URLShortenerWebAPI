@@ -11,7 +11,7 @@ namespace URLShortener_WebAPI_DataAccess
     {
         List<Url> GetAll();
 
-        Url TryGetById(int id);
+        Url TryGetByShortened(string shortenedUrl);
 
         Url TryGetByOriginal(string originalUrl);
 
